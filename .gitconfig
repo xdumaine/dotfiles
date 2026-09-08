@@ -1,27 +1,50 @@
 [user]
 	name = Xander Dumaine
-	email = xander.dumaine@inin.com
+	email = xander@xdumaine.com
 [push]
 	default = current
 [core]
 	excludesfile = /Users/xanderdumaine/.gitignore_global
-	editor = atom --wait
-	# insanely beautiful diffs
-	pager = bash -lc 'diff-highlight | strip_diff_leading_symbols | less -r' -
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+	editor = vim
 [credential]
 	helper = osxkeychain
 [filter "media"]
 	required = true
 	clean = git media clean %f
 	smudge = git media smudge %f
-[color "diff-highlight"]
-	oldNormal = "red bold"
-	oldHighlight = "red bold 52"
-	newNormal = "green bold"
-	newHighlight = "green bold 22"
+
+
+[alias]
+  co = checkout
+  ci = commit
+  st = status
+  br = branch
+  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+  type = cat-file -t
+  dump = cat-file -p
+  cleanup = "!git pull -p && git branch --merged | grep  -v '\\*\\|master\\|develop\\|main' | xargs -n 1 git branch -d"
+  cu = "!git cleanup"
+  sync = "!git checkout $1 && git pull -p && git checkout - && git merge $1 && :"
+  repush = "!git commit -a --amend --no-edit && git push -f --no-verify"
+  clone-internal="!git clone git@github.com:lifeomic/$1"
+  clone-me="!git clone git@github.com:xdumaine/$1"
+  d = "!clear && git diff"
+  br = for-each-ref --sort=committerdate refs/heads/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
+[pager]
+	diff = diff-so-fancy | less --tabs=1,5 -RFX
+[diff]
+	compactionHeuristic = 0
+[format]
+	pretty = format:%C(yellow)%h %Cblue%>(12)%ad %Cgreen%<(7)%aN%Cred%d %Creset%s
+
+[pull]
+	ff = only
+[commit]
+	gpgsign = true
+[tag]
+	gpgSign = true
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
